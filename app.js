@@ -41,42 +41,56 @@ function drawCard(hand) {
 }
 
 // checking for sets and runs 
-function checkSets(hand):
+function checkSets(hand) {
     const rankMap = {};
-    hand.forEach(c => {
-        const rank = c.slice(0, -1);
-        if (!rankMap[rank]) rankMap[rank] = [];
-        rankMap[rank].push(c);    
+
+    hand.forEach(card => {
+        if (!rankMap[card.rank]) {
+            rankMap[card.rank] = [];
+        }
+        rankMap[card.rank].push(card);
     });
+
     return Object.values(rankMap).filter(group => group.length >= 3);
 }
 
 // checking for runs 
 function checkRuns(hand) {
-    const suitMap = {}; 
-    hand.forEach(c => {
-        const suit = c.slice(-1);
-        if (!suitMap[suit]) suitMap[suit] = [];
-        suitMap[suit].push(c);
+    const suitMap = {};
+
+    hand.forEach(card => {
+        if (!suitMap[card.suit]) {
+            suitMap[card.suit] = [];
+        }
+        suitMap[card.suit].push(card);
     });
 
     let sequences = [];
-    for(const suit in suitMap) {
+
+    for (const suit in suitMap) {
         const cards = suitMap[suit];
-        const sorted = cards.sort((a, b) => rankValues[a.slice(0, -1)] - rankValues[b.slice(0, -1)]);
+
+        const sorted = cards.sort(
+            (a, b) => rankValues[a.rank] - rankValues[b.rank]
+        );
+
         let temp = [sorted[0]];
+
         for (let i = 1; i < sorted.length; i++) {
-            const currentRank = rankValues[sorted[i].slice(0, -1)];
-            const prevRank = rankValues[sorted[i-1].slice(0, -1)];
+            const currentRank = rankValues[sorted[i].rank];
+            const prevRank = rankValues[sorted[i - 1].rank];
+
             if (currentRank === prevRank + 1) {
                 temp.push(sorted[i]);
             } else {
                 if (temp.length >= 3) sequences.push(temp);
                 temp = [sorted[i]];
-            }   
+            }
         }
+
         if (temp.length >= 3) sequences.push(temp);
     }
+
     return sequences;
 }
 
