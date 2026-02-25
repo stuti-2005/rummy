@@ -133,13 +133,6 @@ function renderHands() {
     });
 }
 
-function startGame() {
-    createDeck();
-    dealCards();
-    discardPile.push(deck.shift());
-    renderHands();
-}
-
 function askPlayerName() {
     playerName = prompt("Enter your name:");
     if (!playerName || playerName.trim() === "") {
@@ -149,8 +142,18 @@ function askPlayerName() {
     document.getElementById("player-name").textContent = playerName;
 }
 
+function startGame() {
+    askPlayerName();
+    createDeck();
+    dealCards();
+    discardPile.push(deck.shift());
+    renderHands();
+}
+
+
 startGame();
 createDeck();
 dealCards();
 renderHands();
+askPlayerName();
 
