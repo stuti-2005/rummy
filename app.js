@@ -120,7 +120,7 @@ function renderHands() {
 
     computerHand.forEach(() => {
         const img = document.createElement("img");
-        img.src = "cards/back.png";
+        img.src = "cards/cards/back.png";
         computerHandDiv.appendChild(img);
     });
 }
