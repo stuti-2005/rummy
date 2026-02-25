@@ -119,11 +119,20 @@ function renderHands() {
     computerHandDiv.innerHTML = "";
 
     // face up
-    playerHand.forEach(card => {
-        const img = document.createElement("img");
-        img.src = `cards/cards/${card.suit}${card.rank}.png`;
-        playerHandDiv.appendChild(img);
+    playerHand.forEach((card, index) => {
+    const img = document.createElement("img");
+    img.src = `cards/${card.suit}${card.rank}.png`;
+
+    img.addEventListener("click", () => {
+        document.querySelectorAll("#player-hand img").forEach(c =>
+            c.classList.remove("selected")
+        );
+        img.classList.add("selected");
+        img.dataset.index = index;
     });
+
+    playerDiv.appendChild(img);
+});
 
     // face down
     computerHand.forEach(() => {
