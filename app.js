@@ -28,8 +28,8 @@ function shuffle(array) {
 
 // deal cards to player and computer
 function dealCards() {
-    playerHand = deck.splice(0, 7);
-    computerHand = deck.splice(0,7);
+    playerHand = deck.splice(0, 13);
+    computerHand = deck.splice(0,13);
 }
 
 // draw  a card from the deck
