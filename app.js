@@ -2,21 +2,33 @@ let playerName = "";
 let opponentName = "Computer";
 let opponentScore = 0;
 let playerScore = 0;
+
 let drawnCard = null;
 let hasDrawn = false;
 
 const suits = ['H','D', 'C', 'S'];
-const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+const ranks = {'A': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13};
 
 let deck = [];
 let playerHand = [];
 let computerHand = [];
 let discardPile = [];
 
-// map ranks to vallues 
-const rankValues = {'A': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13};
+// Rank values for run checking
+const rankValues = {
+    'A': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6,
+    '7': 7, '8': 8, '9': 9, '10': 10,
+    'J': 11, 'Q': 12, 'K': 13
+}; 
 
-// creatinf deck of cards
+// DOM elements
+const playerHandDiv = document.getElementById("player-hand");
+const computerHandDiv = document.getElementById("computer-hand");
+const drawPileDiv = document.getElementById("draw-pile");
+const discardPileDiv = document.getElementById("discard-pile");
+
+
+// creating deck of cards
 function createDeck() {
     deck = [];
     suits.forEach(suit => {
@@ -39,12 +51,29 @@ function dealCards() {
 }
 
 // draw  a card from the deck
-function drawCard(hand) {
-    if (deck.length === 0) return null;
-        const card = deck.shift();
-        hand.push(card);
-        return card;
-}
+document.getElementById("draw-card").addEventListener("click", () => {
+
+    if (hasDrawn) {
+        alert("You must discard first!");
+        return;
+    }
+
+    if (deck.length === 0) {
+        alert("Deck is empty!");
+        return;
+    }
+
+    drawnCard = deck.shift();
+    hasDrawn = true;
+
+    const img = document.createElement("img");
+    img.src = `cards/cards${drawnCard.suit}${drawnCard.rank}.png`;
+    img.id = "drawn-card-preview";
+
+    const drawPileDiv = document.getElementById("draw-pile");
+    drawPileDiv.innerHTML = "";
+    drawPileDiv.appendChild(img);
+});
 
 // checking for sets and runs 
 function checkSets(hand) {
@@ -109,10 +138,6 @@ function checkWin(hand) {
 }   
 
 
-const playerHandDiv = document.getElementById("player-hand");
-const computerHandDiv = document.getElementById("computer-hand");
-const drawPileDiv = document.getElementById("draw-pile");
-const discardPileDiv = document.getElementById("discard-pile");
 
 function renderHands() {
     playerHandDiv.innerHTML = "";
@@ -121,7 +146,7 @@ function renderHands() {
     // face up
     playerHand.forEach((card, index) => {
     const img = document.createElement("img");
-    img.src = `cards/${card.suit}${card.rank}.png`;
+    img.src = `cards/cards/${card.suit}${card.rank}.png`;
 
     img.addEventListener("click", () => {
         document.querySelectorAll("#player-hand img").forEach(c =>
@@ -161,8 +186,17 @@ function startGame() {
 
 
 startGame();
-createDeck();
-dealCards();
-renderHands();
-askPlayerName();
 
+document.getElementById("discard-card").addEventListener("click", () => {
+    const selected = document.querySelector("#player-hand img.selected");
+    if (!selected) {
+        alert("Please select a card to discard!");
+        return;
+    }
+
+    const cardIndex = parseInt(selected.dataset.index);
+    const discardedCard = playerHand.splice(cardIndex, 1)[0];
+    discardPile.push(discardedCard);
+    hasDrawn = false;
+    renderHands();
+});
