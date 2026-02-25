@@ -140,6 +140,15 @@ function startGame() {
     renderHands();
 }
 
+function askPlayerName() {
+    playerName = prompt("Enter your name:");
+    if (!playerName || playerName.trim() === "") {
+        playerName = "Player";
+    }
+
+    document.getElementById("player-name").textContent = playerName;
+}
+
 startGame();
 createDeck();
 dealCards();
