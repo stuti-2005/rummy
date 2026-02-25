@@ -103,4 +103,34 @@ function checkWin(hand) {
 }   
 
 
+const playerHandDiv = document.getElementById("player-hand");
+const computerHandDiv = document.getElementById("computer-hand");
+const drawPileDiv = document.getElementById("draw-pile");
+const discardPileDiv = document.getElementById("discard-pile");
+
+function renderHands() {
+    playerHandDiv.innerHTML = "";
+    computerHandDiv.innerHTML = "";
+
+    playerHand.forEach(card => {
+        const img = document.createElement("img");
+        img.src = `cards/${card.rank}${card.suit}.png`;
+        playerHandDiv.appendChild(img);
+    });
+
+    computerHand.forEach(() => {
+        const img = document.createElement("img");
+        img.src = "cards/back.png";
+        computerHandDiv.appendChild(img);
+    });
+}
+
+function startGame() {
+    createDeck();
+    dealCards();
+    discardPile.push(deck.shift());
+    renderHands();
+}
+
+startGame();
 
