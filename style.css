@@ -27,3 +27,11 @@ body {
 .hand img.selected {
     border: 2px solid red;
 }
+
+.info-bar {
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+    margin: 5px auto;
+    font-weight: bold;
+}
