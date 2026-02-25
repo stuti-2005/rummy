@@ -1,0 +1,29 @@
+body {
+    font-family: sans-serif;
+    text-align: center;
+}
+
+.hand {
+    display: flex;
+    justify-content: center;
+    margin: 10px;
+}
+
+.pile {
+    display: inline-block;
+    width: 100px;
+    height: 150px;
+    border: 2px solid black;
+    margin: 10px;
+}
+
+.hand img {
+    width: 70px;
+    margin: 5px;
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.hand img.selected {
+    border: 2px solid red;
+}
