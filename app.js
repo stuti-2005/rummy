@@ -112,12 +112,14 @@ function renderHands() {
     playerHandDiv.innerHTML = "";
     computerHandDiv.innerHTML = "";
 
+    // face up
     playerHand.forEach(card => {
         const img = document.createElement("img");
-        img.src = `cards/${card.suit}${card.rank}.png`;
+        img.src = `cards/cards/${card.suit}${card.rank}.png`;
         playerHandDiv.appendChild(img);
     });
 
+    // face down
     computerHand.forEach(() => {
         const img = document.createElement("img");
         img.src = "cards/cards/back.png";
@@ -133,4 +135,7 @@ function startGame() {
 }
 
 startGame();
+createDeck();
+dealCards();
+renderHands();
 
