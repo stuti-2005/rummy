@@ -1,3 +1,9 @@
+let playerName = "";
+let opponentName = "Computer";
+let opponentScore = 0;
+let playerScore = 0;
+let drawnCard = null;
+let hasDrawn = false;
 
 const suits = ['H','D', 'C', 'S'];
 const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
