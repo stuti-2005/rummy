@@ -114,7 +114,7 @@ function renderHands() {
 
     playerHand.forEach(card => {
         const img = document.createElement("img");
-        img.src = `cards/${card.rank}${card.suit}.png`;
+        img.src = `cards/${card.suit}${card.rank}.png`;
         playerHandDiv.appendChild(img);
     });
 
