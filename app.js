@@ -8,15 +8,23 @@ let drawnCard = null;
 let hasDrawn = false;
 let isDrawPileFaceUp = false;
 
+const objs = {};
+function CreateCards(){
+    objs.deck = [];
+    objs.playerHand = [];
+    objs.computerHand = [];
+    objs.discardPile = [];
+}
 const suits = ['H','D', 'C', 'S'];
 const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
 // map ranks to vallues 
 const rankValues = {'A': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13};
 
-const deck = []; // ceatedeck function 
-const playerHand = [];
-const computerHand = [];
-const discardPile = [];
+
+// const deck = []; // ceatedeck function 
+// const playerHand = [];
+// const computerHand = [];
+// const discardPile = [];
 
 function getCardImagePath(card) {
     return `cards/cards/${card.suit}${card.rank}.png`;
@@ -24,7 +32,7 @@ function getCardImagePath(card) {
 
 // creatinf deck of cards
 function createDeck() {
-    deck = [];
+    objs.deck = [];
     suits.forEach(suit => {
         ranks.forEach(rank => {
             deck.push({suit, rank});
@@ -40,8 +48,8 @@ function shuffle(array) {
 
 // deal cards tto both player and computer
 function dealCards() {
-    playerHand = deck.splice(0, 13);
-    computerHand = deck.splice(0,13);
+    playerHand = deck.splice(0, 14);
+    computerHand = deck.splice(0,14);
 }
 
 // draws card from deck
