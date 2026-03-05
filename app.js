@@ -1,5 +1,5 @@
-let playerName = "";
-let opponentName = "Computer";
+const playerName = "";   //things that can chnage can be let 
+const opponentName = "Computer";
 let opponentScore = 0;
 let playerScore = 0;
 let selectedPlayerCardIndex = null;
@@ -13,10 +13,10 @@ const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
 // map ranks to vallues 
 const rankValues = {'A': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13};
 
-let deck = [];
-let playerHand = [];
-let computerHand = [];
-let discardPile = [];
+const deck = []; // ceatedeck function 
+const playerHand = [];
+const computerHand = [];
+const discardPile = [];
 
 function getCardImagePath(card) {
     return `cards/cards/${card.suit}${card.rank}.png`;
@@ -173,14 +173,14 @@ function renderHands() {
         renderHands();
     });
 
-    playerHandDiv.appendChild(img);
+    playerHandDiv.append(img);
 });
 
     // face down
     computerHand.forEach(() => {
         const img = document.createElement("img");
         img.src = "cards/cards/back.png";
-        computerHandDiv.appendChild(img);
+        computerHandDiv.append(img);
     });
 }
 
@@ -189,7 +189,7 @@ function renderDrawPile() {
     if (deck.length > 0) {
         const img = document.createElement("img");
         img.src = isDrawPileFaceUp && drawnCard ? getCardImagePath(drawnCard) : "cards/cards/back.png";
-        drawPileDiv.appendChild(img);
+        drawPileDiv.append(img);
     }
 }
 
@@ -198,7 +198,7 @@ function renderDiscardPile() {
     if (discardPile.length > 0) {
         const img = document.createElement("img");
         img.src = "cards/cards/back.png";
-        discardPileDiv.appendChild(img);
+        discardPileDiv.append(img);
     }
 }
 
