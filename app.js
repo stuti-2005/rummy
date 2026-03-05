@@ -46,10 +46,10 @@ function shuffle(array) {
     return array.sort(() => Math.random() - 0.5);
 }
 
-// deal cards tto both player and computer
+// deal cards to both player and computer
 function dealCards() {
-    playerHand = deck.splice(0, 14);
-    computerHand = deck.splice(0,14);
+    playerHand = deck.splice(0, 13);
+    computerHand = deck.splice(0,13);
 }
 
 // draws card from deck
