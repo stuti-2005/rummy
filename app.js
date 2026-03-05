@@ -45,7 +45,7 @@ function dealCards() {
 }
 
 // draws card from deck
-document.getElementById("draw-card").addEventListener("click", () => {
+document.querySelector("#draw-card").addEventListener("click", () => {
 
     if (hasDrawn) {
         alert("You must discard first!");
@@ -68,7 +68,7 @@ document.getElementById("draw-card").addEventListener("click", () => {
 });
 
 
-document.getElementById("discard-card").addEventListener("click", () => {
+document.querySelector("#discard-card").addEventListener("click", () => {
     const selected = document.querySelector("#player-hand img.selected");
     if (!selected) {
         alert("Please select a card to discard!");
@@ -149,10 +149,10 @@ function checkWin(hand) {
 }   
 
 // DOM elements
-const playerHandDiv = document.getElementById("player-hand");
-const computerHandDiv = document.getElementById("computer-hand");
-const drawPileDiv = document.getElementById("draw-pile");
-const discardPileDiv = document.getElementById("discard-pile");
+const playerHandDiv = document.querySelector("#player-hand");
+const computerHandDiv = document.querySelector("#computer-hand");
+const drawPileDiv = document.querySelector("#draw-pile");
+const discardPileDiv = document.querySelector("#discard-pile");
 
 function renderHands() {
     playerHandDiv.innerHTML = "";
@@ -209,7 +209,7 @@ function askPlayerName() {
         playerName = "Player";
     }
 
-    const playerNameElement = document.getElementById("player-name");
+    const playerNameElement = document.querySelector("#player-name");
     if (playerNameElement) {
         playerNameElement.textContent = playerName;
     }
