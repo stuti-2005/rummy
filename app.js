@@ -31,7 +31,8 @@ const playerHandDiv = document.querySelector("#player-hand");
 const computerHandDiv = document.querySelector("#computer-hand");
 const drawPileDiv = document.querySelector("#draw-pile");
 const discardPileDiv = document.querySelector("#discard-pile");
-
+const setsBox = document.querySelector("#sets");
+const runsBox = document.querySelector("#runs");
 
 function getCardImagePath(card) {
     return `cards/cards/${card.suit}${card.rank}.png`;
@@ -158,7 +159,7 @@ function renderHands() {
         img.addEventListener("dragstart", (e) => {
             e.dataTransfer.setData("cardIndex", index);
         });
-        
+
         img.src = getCardImagePath(card);
         img.dataset.index = index;
         if (index === selectedPlayerCardIndex) img.classList.add("selected");
