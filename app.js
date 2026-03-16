@@ -266,7 +266,32 @@ document.querySelector("#discard-card").addEventListener("click", () => {
     renderDiscardPile();
 });
 
+// checks set Button
+document.querySelector("#check-sets").addEventListener("click", () => {
+    const cards = [...setsBox.querySelectorAll("img")].map(img => {
+        const file = img.src.split("/").pop().replace(".png", "");
+        return {suit: file[0], rank: file.slice(1)};
+    });
+    const result = checkSets(cards);
+    if (result.length > 0) {
+        alert("Valid sets!");
+    } else {
+        alert("No valid sets found!");
+    }
+});
 
-
+// checks runs button
+document.querySelector("#check-runs").addEventListener("click", () => {
+    const cards = [...runsBox.querySelectorAll("img")].map(img => {
+        const file = img.src.split("/").pop().replace(".png", "");
+        return {suit: file[0], rank: file.slice(1)};
+    });
+    const result = checkRuns(cards);
+    if (result.length > 0) {
+        alert("Valid runs!");
+    } else {
+        alert("No valid runs found!");
+    }
+});
 
 startGame();
