@@ -214,27 +214,31 @@ document.querySelector("#draw-card").addEventListener("click", () => {
 
 
 document.querySelector("#discard-card").addEventListener("click", () => {
-    if (!hasdrawn) {
-        alert("Please draw a card first!");
+
+    if (!hasDrawn) {
+        alert("You must draw a card first!");
         return;
     }
+
     const selected = document.querySelector("#player-hand img.selected");
     if (!selected) {
-        alert("Please select a card to discard!");
+        alert("Select a card to discard!");
         return;
     }
 
     const cardIndex = parseInt(selected.dataset.index);
     const discardedCard = playerHand.splice(cardIndex, 1)[0];
+
     discardPile.push(discardedCard);
+
     selectedPlayerCardIndex = null;
     hasDrawn = false;
     isDrawPileFaceUp = false;
+
     renderHands();
     renderDrawPile();
     renderDiscardPile();
 });
-
 
 
 
