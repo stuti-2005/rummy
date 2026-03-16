@@ -153,28 +153,49 @@ function renderHands() {
     computerHandDiv.innerHTML = "";
  
     playerHand.forEach((card, index) => {
-        const img = document.createElement("img");
-        img.draggable = true;
 
-        img.addEventListener("dragstart", (e) => {
-            e.dataTransfer.setData("cardIndex", index);
-        });
+    const img = document.createElement("img");
+    img.src = getCardImagePath(card);
+    img.dataset.index = index;
 
-        img.src = getCardImagePath(card);
-        img.dataset.index = index;
-        if (index === selectedPlayerCardIndex) img.classList.add("selected");
-        img.addEventListener("click", () => {
-            selectedPlayerCardIndex = index;
-            renderHands();
-        });
-        playerHandDiv.append(img);
+    img.draggable = true;
+
+    img.addEventListener("dragstart", (e)=>{
+        e.dataTransfer.setData("cardIndex", index);
     });
+
+    if (index === selectedPlayerCardIndex) {
+        img.classList.add("selected");
+    }
+
+    img.addEventListener("click", () => {
+        selectedPlayerCardIndex = index;
+        renderHands();
+    });
+
+    playerHandDiv.append(img);
+
+});
  
     computerHand.forEach(() => {
         const img = document.createElement("img");
         img.src = "cards/cards/back.png";
         computerHandDiv.append(img);
     });
+}
+
+function moveCardToZone(zone, index){
+
+    const card = playerHand.splice(index,1)[0];
+
+    const img = document.createElement("img");
+    img.src = getCardImagePath(card);
+    img.dataset.rank = card.rank;
+    img.dataset.suit = card.suit;
+
+    zone.appendChild(img);
+
+    renderHands();
 }
 
 function renderDrawPile() {
@@ -196,23 +217,37 @@ function renderDiscardPile() {
 }
 
 // boxes for dropping into sets and runs
-function setupDropZones(zone) {
-    zone.addEventListener("dragover", (e) => {
-        e.preventDefault();
-    });
-    zone.addEventListener("drop", (e) => {
-        e.preventDefault();
-        const cardIndex = e.dataTransfer.getData("cardIndex");
-        const card = playerHand[cardIndex];
+function setupDropZone(zone){
 
-        const img = document.createElement("img");
-        img.src = getCardImagePath(card);
-        zone.append(img);
+    zone.addEventListener("dragover",(e)=>{
+        e.preventDefault();
     });
+
+    zone.addEventListener("drop",(e)=>{
+
+        e.preventDefault();
+
+        if(zone.classList.contains("locked")) return;
+
+        const index = e.dataTransfer.getData("cardIndex");
+
+        moveCardToZone(zone, index);
+
+    });
+
 }
 
-setupDropZones(setsBox);
-setupDropZones(runsBox);
+setupDropZone(setsBox);
+setupDropZone(runsBox);
+
+function getCardsFromZone(zone){
+
+    return [...zone.querySelectorAll("img")].map(img=>({
+        rank: img.dataset.rank,
+        suit: img.dataset.suit
+    }));
+
+}
 
 // event listeners for draw and discard buttons
 // draws card from deck
@@ -267,31 +302,44 @@ document.querySelector("#discard-card").addEventListener("click", () => {
 });
 
 // checks set Button
-document.querySelector("#check-sets").addEventListener("click", () => {
-    const cards = [...setsBox.querySelectorAll("img")].map(img => {
-        const file = img.src.split("/").pop().replace(".png", "");
-        return {suit: file[0], rank: file.slice(1)};
-    });
+checkSetsBtn.addEventListener("click", ()=>{
+
+    const cards = getCardsFromZone(setsBox);
+
     const result = checkSets(cards);
-    if (result.length > 0) {
-        alert("Valid sets!");
-    } else {
-        alert("No valid sets found!");
-    }
-});
 
+    setsBox.classList.remove("valid","invalid");
+
+    if(result.length>0){
+
+        setsBox.classList.add("valid");
+        setsBox.classList.add("locked");
+
+    }else{
+
+        setsBox.classList.add("invalid");
+
+    }
+
+});
 // checks runs button
-document.querySelector("#check-runs").addEventListener("click", () => {
-    const cards = [...runsBox.querySelectorAll("img")].map(img => {
-        const file = img.src.split("/").pop().replace(".png", "");
-        return {suit: file[0], rank: file.slice(1)};
-    });
-    const result = checkRuns(cards);
-    if (result.length > 0) {
-        alert("Valid runs!");
-    } else {
-        alert("No valid runs found!");
-    }
-});
+checkRunsBtn.addEventListener("click", ()=>{
 
-startGame();
+    const cards = getCardsFromZone(runsBox);
+
+    const result = checkRuns(cards);
+
+    runsBox.classList.remove("valid","invalid");
+
+    if(result.length>0){
+
+        runsBox.classList.add("valid");
+        runsBox.classList.add("locked");
+
+    }else{
+
+        runsBox.classList.add("invalid");
+
+    }
+
+});
