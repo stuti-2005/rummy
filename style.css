@@ -33,8 +33,8 @@ body {
 }
 
 .hand img {
-    width: 58px;
-    margin: 3px;
+    width: 560px;
+    margin: 4px;
     cursor: pointer;
     border: 2px solid transparent;
     box-sizing: border-box;
@@ -61,7 +61,7 @@ body {
 .drop-zone{
     width:320px;
     min-height:120px;
-    border:3px dashed white;
+    border:3px dashed black;
     display:flex;
     align-items:center;
     gap:6px;
@@ -94,4 +94,18 @@ body {
     50%{transform:translateX(4px)}
     75%{transform:translateX(-4px)}
     100%{transform:translateX(0)}
+}
+
+button{
+    margin:8px;
+    padding:6px 12px;
+    font-size:14px;
+    cursor:pointer;
+}
+
+body{
+    font-family: sans-serif;
+    text-align:center;
+    background:#0b5c2e;
+    color:white;
 }
