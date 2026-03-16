@@ -346,4 +346,5 @@ checkRunsBtn.addEventListener("click", ()=>{
 
 });
 
+
 startGame();
