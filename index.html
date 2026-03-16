@@ -6,44 +6,48 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Rummy Game</h1>
 
-    <div class="info-bar">
+<h1>Rummy Game</h1>
+
+<div class="info-bar">
     <span id="opponent-name">Computer</span>
     <span>Score: <span id="opponent-score">0</span></span>
-    </div>
+</div>
 
-    <div class="info-bar">
+<div class="info-bar">
     <span id="player-name">Player</span>
     <span>Score: <span id="player-score">0</span></span>
-    </div>
-    
-    <div id="computer-hand" class="hand"></div>
-    <div class="pile-row">
+</div>
+
+<div id="computer-hand" class="hand"></div>
+
+<div class="pile-row">
     <div id="draw-pile" class="pile"></div>
     <div id="discard-pile" class="pile"></div>
-    </div>
-    <div id="player-hand" class="hand"></div>
+</div>
 
-    <button id="draw-card">Draw Card</button>
-    <button id="discard-card">Discard Selected</button>
+<div id="player-hand" class="hand"></div>
 
-    <script src="app.js"></script>
+<button id="draw-card">Draw Card</button>
+<button id="discard-card">Discard Selected</button>
 
-    <div id="meld-area">
+<div id="meld-area">
 
     <div class="meld-section">
         <h3>Sets</h3>
-        <div id="sets-box" class="drop-zone"></div>
+        <div id="sets" class="drop-zone"></div>
         <button id="check-sets">Check Sets</button>
     </div>
 
     <div class="meld-section">
         <h3>Runs</h3>
-        <div id="runs-box" class="drop-zone"></div>
+        <div id="runs" class="drop-zone"></div>
         <button id="check-runs">Check Runs</button>
     </div>
-    </div>
-    
+
+</div>
+
+<script src="app.js" defer></script>
+
 </body>
 </html>
