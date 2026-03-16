@@ -214,6 +214,10 @@ document.querySelector("#draw-card").addEventListener("click", () => {
 
 
 document.querySelector("#discard-card").addEventListener("click", () => {
+    if (!hasdrawn) {
+        alert("Please draw a card first!");
+        return;
+    }
     const selected = document.querySelector("#player-hand img.selected");
     if (!selected) {
         alert("Please select a card to discard!");
@@ -230,20 +234,6 @@ document.querySelector("#discard-card").addEventListener("click", () => {
     renderDrawPile();
     renderDiscardPile();
 });
-
-
-
-
- 
-
-
-
-
-
-
-
-
-
 
 
 
