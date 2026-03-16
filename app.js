@@ -345,3 +345,5 @@ checkRunsBtn.addEventListener("click", ()=>{
     }
 
 });
+
+startGame();
