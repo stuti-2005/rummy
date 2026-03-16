@@ -1,38 +1,50 @@
-const playerName = "";   //things that can chnage can be let 
+let playerName = "";   //things that can chnage can be let 
 const opponentName = "Computer";
 let opponentScore = 0;
 let playerScore = 0;
 let selectedPlayerCardIndex = null;
-
 let drawnCard = null;
 let hasDrawn = false;
 let isDrawPileFaceUp = false;
 
-const objs = {};
-function CreateCards(){
-    objs.deck = [];
-    objs.playerHand = [];
-    objs.computerHand = [];
-    objs.discardPile = [];
-}
+let deck = [];
+let playerHand = [];
+let computerHand = [];
+let discardPile = [];
+
+// const objs = {};
+// function CreateCards(){
+//     objs.deck = [];
+//     objs.playerHand = [];a
+//     objs.computerHand = [];
+//     objs.discardPile = [];
+// }
+
 const suits = ['H','D', 'C', 'S'];
 const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
 // map ranks to vallues 
-const rankValues = {'A': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13};
+const rankValues = {'A': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7,
+                    '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13};
 
+// DOM elements
+const playerHandDiv = document.querySelector("#player-hand");
+const computerHandDiv = document.querySelector("#computer-hand");
+const drawPileDiv = document.querySelector("#draw-pile");
+const discardPileDiv = document.querySelector("#discard-pile");
 
-// const deck = []; // ceatedeck function 
-// const playerHand = [];
-// const computerHand = [];
-// const discardPile = [];
 
 function getCardImagePath(card) {
     return `cards/cards/${card.suit}${card.rank}.png`;
 }
 
-// creatinf deck of cards
+// shuffles deck
+function shuffle(array) {
+    return array.sort(() => Math.random() - 0.5);
+}
+
+// creating deck of cards
 function createDeck() {
-    objs.deck = [];
+    deck = [];
     suits.forEach(suit => {
         ranks.forEach(rank => {
             deck.push({suit, rank});
@@ -41,10 +53,6 @@ function createDeck() {
     deck = shuffle(deck);
 }
 
-// shuffles deck
-function shuffle(array) {
-    return array.sort(() => Math.random() - 0.5);
-}
 
 // deal cards to both player and computer
 function dealCards() {
@@ -52,49 +60,33 @@ function dealCards() {
     computerHand = deck.splice(0,13);
 }
 
-// draws card from deck
-document.querySelector("#draw-card").addEventListener("click", () => {
-
-    if (hasDrawn) {
-        alert("You must discard first!");
-        return;
+// asks player for name 
+function askPlayerName() {
+    playerName = prompt("Enter your name:");
+    if (!playerName || playerName.trim() === "") {
+        playerName = "Player";
     }
 
-    if (deck.length === 0) {
-        alert("Deck is empty!");
-        return;
+    const playerNameElement = document.querySelector("#player-name");
+    if (playerNameElement) {
+        playerNameElement.textContent = playerName;
     }
-
-    drawnCard = deck.shift();
-    playerHand.push(drawnCard);
-    selectedPlayerCardIndex = playerHand.length - 1;
-    hasDrawn = true;
-    isDrawPileFaceUp = true;
-
-    renderHands();
-    renderDrawPile();
-});
+}
 
 
-document.querySelector("#discard-card").addEventListener("click", () => {
-    const selected = document.querySelector("#player-hand img.selected");
-    if (!selected) {
-        alert("Please select a card to discard!");
-        return;
-    }
-
-    const cardIndex = parseInt(selected.dataset.index);
-    const discardedCard = playerHand.splice(cardIndex, 1)[0];
-    discardPile.push(discardedCard);
+function startGame() {
+    askPlayerName();
+    createDeck();
+    dealCards();
     selectedPlayerCardIndex = null;
-    hasDrawn = false;
     isDrawPileFaceUp = false;
+    discardPile.push(deck.shift());
     renderHands();
     renderDrawPile();
     renderDiscardPile();
-});
+}
 
-// checking for sets and runs 
+// checking for sets 
 function checkSets(hand) {
     const rankMap = {};
 
@@ -104,7 +96,6 @@ function checkSets(hand) {
         }
         rankMap[card.rank].push(card);
     });
-
     return Object.values(rankMap).filter(group => group.length >= 3);
 }
 
@@ -154,37 +145,24 @@ function checkWin(hand) {
     const runs = checkRuns(hand);
     let totalCards = sets.flat().length + runs.flat().length;
     return totalCards >= 7;
-}   
-
-// DOM elements
-const playerHandDiv = document.querySelector("#player-hand");
-const computerHandDiv = document.querySelector("#computer-hand");
-const drawPileDiv = document.querySelector("#draw-pile");
-const discardPileDiv = document.querySelector("#discard-pile");
+}  
 
 function renderHands() {
     playerHandDiv.innerHTML = "";
     computerHandDiv.innerHTML = "";
-
-    // face up
+ 
     playerHand.forEach((card, index) => {
-    const img = document.createElement("img");
-    img.src = getCardImagePath(card);
-    img.dataset.index = index;
-
-    if (index === selectedPlayerCardIndex) {
-        img.classList.add("selected");
-    }
-
-    img.addEventListener("click", () => {
-        selectedPlayerCardIndex = index;
-        renderHands();
+        const img = document.createElement("img");
+        img.src = getCardImagePath(card);
+        img.dataset.index = index;
+        if (index === selectedPlayerCardIndex) img.classList.add("selected");
+        img.addEventListener("click", () => {
+            selectedPlayerCardIndex = index;
+            renderHands();
+        });
+        playerHandDiv.append(img);
     });
-
-    playerHandDiv.append(img);
-});
-
-    // face down
+ 
     computerHand.forEach(() => {
         const img = document.createElement("img");
         img.src = "cards/cards/back.png";
@@ -210,30 +188,65 @@ function renderDiscardPile() {
     }
 }
 
-// asks player for name 
-function askPlayerName() {
-    playerName = prompt("Enter your name:");
-    if (!playerName || playerName.trim() === "") {
-        playerName = "Player";
+// event listeners for draw and discard buttons
+// draws card from deck
+document.querySelector("#draw-card").addEventListener("click", () => {
+
+    if (hasDrawn) {
+        alert("You must discard first!");
+        return;
     }
 
-    const playerNameElement = document.querySelector("#player-name");
-    if (playerNameElement) {
-        playerNameElement.textContent = playerName;
+    if (deck.length === 0) {
+        alert("Deck is empty!");
+        return;
     }
-}
 
-function startGame() {
-    askPlayerName();
-    createDeck();
-    dealCards();
+    drawnCard = deck.shift();
+    playerHand.push(drawnCard);
+    selectedPlayerCardIndex = playerHand.length - 1;
+    hasDrawn = true;
+    isDrawPileFaceUp = true;
+
+    renderHands();
+    renderDrawPile();
+});
+
+
+document.querySelector("#discard-card").addEventListener("click", () => {
+    const selected = document.querySelector("#player-hand img.selected");
+    if (!selected) {
+        alert("Please select a card to discard!");
+        return;
+    }
+
+    const cardIndex = parseInt(selected.dataset.index);
+    const discardedCard = playerHand.splice(cardIndex, 1)[0];
+    discardPile.push(discardedCard);
     selectedPlayerCardIndex = null;
+    hasDrawn = false;
     isDrawPileFaceUp = false;
-    discardPile.push(deck.shift());
     renderHands();
     renderDrawPile();
     renderDiscardPile();
-}
+});
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 startGame();
