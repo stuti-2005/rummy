@@ -195,6 +195,25 @@ function renderDiscardPile() {
     }
 }
 
+// boxes for dropping into sets and runs
+function setupDropZones(zone) {
+    zone.addEventListener("dragover", (e) => {
+        e.preventDefault();
+    });
+    zone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        const cardIndex = e.dataTransfer.getData("cardIndex");
+        const card = playerHand[cardIndex];
+
+        const img = document.createElement("img");
+        img.src = getCardImagePath(card);
+        zone.append(img);
+    });
+}
+
+setupDropZones(setsBox);
+setupDropZones(runsBox);
+
 // event listeners for draw and discard buttons
 // draws card from deck
 document.querySelector("#draw-card").addEventListener("click", () => {
