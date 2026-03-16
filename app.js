@@ -31,6 +31,8 @@ const playerHandDiv = document.querySelector("#player-hand");
 const computerHandDiv = document.querySelector("#computer-hand");
 const drawPileDiv = document.querySelector("#draw-pile");
 const discardPileDiv = document.querySelector("#discard-pile");
+const checkSetsBtn = document.querySelector("#check-sets");
+const checkRunsBtn = document.querySelector("#check-runs");
 const setsBox = document.querySelector("#sets");
 const runsBox = document.querySelector("#runs");
 
