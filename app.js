@@ -153,6 +153,12 @@ function renderHands() {
  
     playerHand.forEach((card, index) => {
         const img = document.createElement("img");
+        img.draggable = true;
+
+        img.addEventListener("dragstart", (e) => {
+            e.dataTransfer.setData("cardIndex", index);
+        });
+        
         img.src = getCardImagePath(card);
         img.dataset.index = index;
         if (index === selectedPlayerCardIndex) img.classList.add("selected");
