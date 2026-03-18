@@ -326,22 +326,14 @@ checkSetsBtn.addEventListener("click", ()=>{
 });
 // checks runs button
 checkRunsBtn.addEventListener("click", ()=>{
-
     const cards = getCardsFromZone(runsBox);
-
     const result = checkRuns(cards);
-
     runsBox.classList.remove("valid","invalid");
-
     if(result.length>0){
-
         runsBox.classList.add("valid");
         runsBox.classList.add("locked");
-
     }else{
-
         runsBox.classList.add("invalid");
-
     }
 
 });
