@@ -1,7 +1,6 @@
-let playerName = "";   //things that can chnage can be let 
+let playerName = "";
 const opponentName = "Computer";
-let opponentScore = 0;
-let playerScore = 0;
+
 let selectedPlayerCardIndex = null;
 let drawnCard = null;
 let hasDrawn = false;
@@ -12,331 +11,289 @@ let playerHand = [];
 let computerHand = [];
 let discardPile = [];
 
-// const objs = {};
-// function CreateCards(){
-//     objs.deck = [];
-//     objs.playerHand = [];a
-//     objs.computerHand = [];
-//     objs.discardPile = [];
-// }
+const suits = ['H','D','C','S'];
+const ranks = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
 
-const suits = ['H','D', 'C', 'S'];
-const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
-// map ranks to vallues 
-const rankValues = {'A': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7,
-                    '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13};
+const rankValues = {
+    'A':1,'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,
+    '8':8,'9':9,'10':10,'J':11,'Q':12,'K':13
+};
 
-// DOM elements
 const playerHandDiv = document.querySelector("#player-hand");
 const computerHandDiv = document.querySelector("#computer-hand");
 const drawPileDiv = document.querySelector("#draw-pile");
 const discardPileDiv = document.querySelector("#discard-pile");
-const checkSetsBtn = document.querySelector("#check-sets");
-const checkRunsBtn = document.querySelector("#check-runs");
 const setsBox = document.querySelector("#sets");
 const runsBox = document.querySelector("#runs");
 
-function getCardImagePath(card) {
+function getCardImagePath(card){
     return `cards/cards/${card.suit}${card.rank}.png`;
 }
 
-// shuffles deck
-function shuffle(array) {
-    return array.sort(() => Math.random() - 0.5);
+function shuffle(array){
+    return array.sort(()=>Math.random()-0.5);
 }
 
-// creating deck of cards
-function createDeck() {
+function createDeck(){
     deck = [];
-    suits.forEach(suit => {
-        ranks.forEach(rank => {
-            deck.push({suit, rank});
+    suits.forEach(s=>{
+        ranks.forEach(r=>{
+            deck.push({suit:s, rank:r});
         });
     });
     deck = shuffle(deck);
 }
 
-
-// deal cards to both player and computer
-function dealCards() {
-    playerHand = deck.splice(0, 13);
+function dealCards(){
+    playerHand = deck.splice(0,13);
     computerHand = deck.splice(0,13);
 }
 
-// asks player for name 
-function askPlayerName() {
-    playerName = prompt("Enter your name:");
-    if (!playerName || playerName.trim() === "") {
-        playerName = "Player";
-    }
-
-    const playerNameElement = document.querySelector("#player-name");
-    if (playerNameElement) {
-        playerNameElement.textContent = playerName;
-    }
+function askPlayerName(){
+    playerName = prompt("Enter your name:") || "Player";
+    document.querySelector("#player-name").textContent = playerName;
 }
 
-
-function startGame() {
+function startGame(){
     askPlayerName();
     createDeck();
     dealCards();
-    selectedPlayerCardIndex = null;
-    isDrawPileFaceUp = false;
     discardPile.push(deck.shift());
     renderHands();
     renderDrawPile();
     renderDiscardPile();
 }
 
-// checking for sets 
-function checkSets(hand) {
-    const rankMap = {};
-
-    hand.forEach(card => {
-        if (!rankMap[card.rank]) {
-            rankMap[card.rank] = [];
-        }
-        rankMap[card.rank].push(card);
+function checkSets(hand){
+    const map = {};
+    hand.forEach(c=>{
+        if(!map[c.rank]) map[c.rank]=[];
+        map[c.rank].push(c);
     });
-    return Object.values(rankMap).filter(group => group.length >= 3);
+    return Object.values(map).filter(g=>g.length>=3);
 }
 
-// checking for runs 
-function checkRuns(hand) {
+function checkRuns(hand){
     const suitMap = {};
-
-    hand.forEach(card => {
-        if (!suitMap[card.suit]) {
-            suitMap[card.suit] = [];
-        }
-        suitMap[card.suit].push(card);
+    hand.forEach(c=>{
+        if(!suitMap[c.suit]) suitMap[c.suit]=[];
+        suitMap[c.suit].push(c);
     });
 
     let sequences = [];
 
-    for (const suit in suitMap) {
-        const cards = suitMap[suit];
-
-        const sorted = cards.sort(
-            (a, b) => rankValues[a.rank] - rankValues[b.rank]
+    for(const suit in suitMap){
+        const sorted = [...suitMap[suit]].sort(
+            (a,b)=>rankValues[a.rank]-rankValues[b.rank]
         );
 
-        let temp = [sorted[0]];
+        let temp=[sorted[0]];
 
-        for (let i = 1; i < sorted.length; i++) {
-            const currentRank = rankValues[sorted[i].rank];
-            const prevRank = rankValues[sorted[i - 1].rank];
+        for(let i=1;i<sorted.length;i++){
+            const curr = rankValues[sorted[i].rank];
+            const prev = rankValues[sorted[i-1].rank];
 
-            if (currentRank === prevRank + 1) {
+            if(curr===prev+1){
                 temp.push(sorted[i]);
             } else {
-                if (temp.length >= 3) sequences.push(temp);
-                temp = [sorted[i]];
+                if(temp.length>=3) sequences.push(temp);
+                temp=[sorted[i]];
             }
         }
 
-        if (temp.length >= 3) sequences.push(temp);
+        if(temp.length>=3) sequences.push(temp);
     }
 
     return sequences;
 }
 
-// checking for win condition
-function checkWin(hand) {
-    const sets = checkSets(hand);
-    const runs = checkRuns(hand);
-    let totalCards = sets.flat().length + runs.flat().length;
-    return totalCards >= 7;
-}  
+function renderHands(){
+    playerHandDiv.innerHTML="";
+    computerHandDiv.innerHTML="";
 
-function renderHands() {
-    playerHandDiv.innerHTML = "";
-    computerHandDiv.innerHTML = "";
- 
-    playerHand.forEach((card, index) => {
+    playerHand.forEach((card,index)=>{
+        const img=document.createElement("img");
+        img.src=getCardImagePath(card);
+        img.dataset.index=index;
+        img.draggable=true;
 
-    const img = document.createElement("img");
-    img.src = getCardImagePath(card);
-    img.dataset.index = index;
+        img.addEventListener("dragstart",(e)=>{
+            e.dataTransfer.setData("cardIndex", index);
+        });
 
-    img.draggable = true;
+        img.addEventListener("click",()=>{
+            selectedPlayerCardIndex=index;
+            renderHands();
+        });
 
-    img.addEventListener("dragstart", (e)=>{
-        e.dataTransfer.setData("cardIndex", index);
+        if(index===selectedPlayerCardIndex){
+            img.classList.add("selected");
+        }
+
+        playerHandDiv.append(img);
     });
 
-    if (index === selectedPlayerCardIndex) {
-        img.classList.add("selected");
-    }
-
-    img.addEventListener("click", () => {
-        selectedPlayerCardIndex = index;
-        renderHands();
-    });
-
-    playerHandDiv.append(img);
-
-});
- 
-    computerHand.forEach(() => {
-        const img = document.createElement("img");
-        img.src = "cards/cards/back.png";
+    computerHand.forEach(()=>{
+        const img=document.createElement("img");
+        img.src="cards/cards/back.png";
         computerHandDiv.append(img);
     });
 }
 
-function moveCardToZone(zone, index){
-
+function moveCardToZone(zone,index){
     const card = playerHand.splice(index,1)[0];
 
-    const img = document.createElement("img");
-    img.src = getCardImagePath(card);
-    img.dataset.rank = card.rank;
-    img.dataset.suit = card.suit;
+    const img=document.createElement("img");
+    img.src=getCardImagePath(card);
+    img.dataset.rank=card.rank;
+    img.dataset.suit=card.suit;
+    img.draggable=true;
+
+    img.addEventListener("dragstart",(e)=>{
+        e.dataTransfer.setData("fromZone","zone");
+        e.dataTransfer.setData("rank",card.rank);
+        e.dataTransfer.setData("suit",card.suit);
+    });
 
     zone.appendChild(img);
-
     renderHands();
 }
 
-function renderDrawPile() {
-    drawPileDiv.innerHTML = "";
-    if (deck.length > 0) {
-        const img = document.createElement("img");
-        img.src = isDrawPileFaceUp && drawnCard ? getCardImagePath(drawnCard) : "cards/cards/back.png";
-        drawPileDiv.append(img);
-    }
-}
+function sortRunZone(zone){
+    const cards = getCardsFromZone(zone);
 
-function renderDiscardPile() {
-    discardPileDiv.innerHTML = "";
-    if (discardPile.length > 0) {
-        const img = document.createElement("img");
-        img.src = "cards/cards/back.png";
-        discardPileDiv.append(img);
-    }
-}
+    const sorted=[...cards].sort(
+        (a,b)=>rankValues[a.rank]-rankValues[b.rank]
+    );
 
-// boxes for dropping into sets and runs
-function setupDropZone(zone){
+    zone.innerHTML="";
 
-    zone.addEventListener("dragover",(e)=>{
-        e.preventDefault();
+    sorted.forEach(card=>{
+        const img=document.createElement("img");
+        img.src=getCardImagePath(card);
+        img.dataset.rank=card.rank;
+        img.dataset.suit=card.suit;
+        img.draggable=true;
+
+        img.addEventListener("dragstart",(e)=>{
+            e.dataTransfer.setData("fromZone","zone");
+            e.dataTransfer.setData("rank",card.rank);
+            e.dataTransfer.setData("suit",card.suit);
+        });
+
+        zone.appendChild(img);
     });
+}
+
+function validateZone(zone){
+    const cards=getCardsFromZone(zone);
+    zone.classList.remove("valid","invalid");
+
+    if(cards.length<3){
+        zone.classList.add("invalid");
+        return;
+    }
+
+    let result = zone.id==="sets"
+        ? checkSets(cards)
+        : checkRuns(cards);
+
+    const total=result.flat().length;
+
+    if(result.length>0 && total===cards.length){
+        zone.classList.add("valid");
+    } else {
+        zone.classList.add("invalid");
+    }
+}
+
+function setupDropZone(zone){
+    zone.addEventListener("dragover",(e)=>e.preventDefault());
 
     zone.addEventListener("drop",(e)=>{
-
         e.preventDefault();
 
-        if(zone.classList.contains("locked")) return;
+        const index=parseInt(e.dataTransfer.getData("cardIndex"));
 
-        const index = e.dataTransfer.getData("cardIndex");
+        const count=zone.querySelectorAll("img").length;
 
-        moveCardToZone(zone, index);
+        if(zone.id==="sets" && count>=4){
+            alert("Max 4 cards in a set");
+            return;
+        }
 
+        moveCardToZone(zone,index);
+
+        if(zone.id==="runs"){
+            sortRunZone(zone);
+        }
+
+        validateZone(zone);
     });
-
 }
+
+function setupHandDrop(){
+    playerHandDiv.addEventListener("dragover",(e)=>e.preventDefault());
+
+    playerHandDiv.addEventListener("drop",(e)=>{
+        e.preventDefault();
+
+        const fromZone=e.dataTransfer.getData("fromZone");
+
+        if(fromZone==="zone"){
+            const rank=e.dataTransfer.getData("rank");
+            const suit=e.dataTransfer.getData("suit");
+
+            const el=[...document.querySelectorAll(".drop-zone img")]
+                .find(img=>img.dataset.rank===rank && img.dataset.suit===suit);
+
+            if(el) el.remove();
+
+            playerHand.push({rank,suit});
+            renderHands();
+
+            sortRunZone(runsBox);
+            validateZone(runsBox);
+            validateZone(setsBox);
+        }
+    });
+}
+
+function getCardsFromZone(zone){
+    return [...zone.querySelectorAll("img")].map(img=>({
+        rank:img.dataset.rank,
+        suit:img.dataset.suit
+    }));
+}
+
+document.querySelector("#draw-card").addEventListener("click",()=>{
+    if(hasDrawn) return alert("Discard first!");
+    if(deck.length===0) return alert("Deck empty!");
+
+    drawnCard=deck.shift();
+    playerHand.push(drawnCard);
+    hasDrawn=true;
+
+    renderHands();
+});
+
+document.querySelector("#discard-card").addEventListener("click",()=>{
+    if(!hasDrawn) return alert("Draw first!");
+
+    const selected=document.querySelector(".selected");
+    if(!selected) return alert("Select a card!");
+
+    const i=parseInt(selected.dataset.index);
+    discardPile.push(playerHand.splice(i,1)[0]);
+
+    hasDrawn=false;
+    selectedPlayerCardIndex=null;
+
+    renderHands();
+});
 
 setupDropZone(setsBox);
 setupDropZone(runsBox);
-
-function getCardsFromZone(zone){
-
-    return [...zone.querySelectorAll("img")].map(img=>({
-        rank: img.dataset.rank,
-        suit: img.dataset.suit
-    }));
-
-}
-
-// event listeners for draw and discard buttons
-// draws card from deck
-document.querySelector("#draw-card").addEventListener("click", () => {
-
-    if (hasDrawn) {
-        alert("You must discard first!");
-        return;
-    }
-
-    if (deck.length === 0) {
-        alert("Deck is empty!");
-        return;
-    }
-
-    drawnCard = deck.shift();
-    playerHand.push(drawnCard);
-    selectedPlayerCardIndex = playerHand.length - 1;
-    hasDrawn = true;
-    isDrawPileFaceUp = true;
-
-    renderHands();
-    renderDrawPile();
-});
-
-
-document.querySelector("#discard-card").addEventListener("click", () => {
-
-    if (!hasDrawn) {
-        alert("You must draw a card first!");
-        return;
-    }
-
-    const selected = document.querySelector("#player-hand img.selected");
-    if (!selected) {
-        alert("Select a card to discard!");
-        return;
-    }
-
-    const cardIndex = parseInt(selected.dataset.index);
-    const discardedCard = playerHand.splice(cardIndex, 1)[0];
-
-    discardPile.push(discardedCard);
-
-    selectedPlayerCardIndex = null;
-    hasDrawn = false;
-    isDrawPileFaceUp = false;
-
-    renderHands();
-    renderDrawPile();
-    renderDiscardPile();
-});
-
-// checks set Button
-checkSetsBtn.addEventListener("click", ()=>{
-
-    const cards = getCardsFromZone(setsBox);
-
-    const result = checkSets(cards);
-
-    setsBox.classList.remove("valid","invalid");
-
-    if(result.length>0){
-
-        setsBox.classList.add("valid");
-        setsBox.classList.add("locked");
-
-    }else{
-
-        setsBox.classList.add("invalid");
-
-    }
-
-});
-// checks runs button
-checkRunsBtn.addEventListener("click", ()=>{
-    const cards = getCardsFromZone(runsBox);
-    const result = checkRuns(cards);
-    runsBox.classList.remove("valid","invalid");
-    if(result.length>0){
-        runsBox.classList.add("valid");
-        runsBox.classList.add("locked");
-    }else{
-        runsBox.classList.add("invalid");
-    }
-
-});
-
+setupHandDrop();
 
 startGame();
