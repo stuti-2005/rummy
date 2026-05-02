@@ -296,4 +296,67 @@ setupDropZone(setsBox);
 setupDropZone(runsBox);
 setupHandDrop();
 
+function computerTurn(){
+
+    if (gameOver) return;
+
+    // Deciding whether discard pile helps
+    let topDiscard = discardPile[discardPile.length - 1];
+
+    function isUseful(card, hand){
+        let sameRank = hand.filter(c => c.rank === card.rank).length;
+        let sameSuit = hand.filter(c => c.suit === card.suit);
+
+        let closeRun = sameSuit.some(c => 
+            Math.abs(rankValues[c.rank] - rankValues[card.rank]) === 1
+        );
+
+        return sameRank >= 2 || closeRun;
+    }
+
+    let drawn;
+
+    if (topDiscard && isUseful(topDiscard, computerHand)) {
+        drawn = discardPile.pop();
+    } else {
+        drawn = deck.shift();
+    }
+
+    computerHand.push(drawn);
+
+    // Choose worst card to discard
+    let worstIndex = 0;
+    let worstScore = Infinity;
+
+    computerHand.forEach((card, i) => {
+
+        let sameRank = computerHand.filter(c => c.rank === card.rank).length;
+        let sameSuit = computerHand.filter(c => c.suit === card.suit);
+
+        let runPotential = sameSuit.filter(c =>
+            Math.abs(rankValues[c.rank] - rankValues[card.rank]) <= 2
+        ).length;
+
+        let score = sameRank + runPotential;
+
+        if (score < worstScore) {
+            worstScore = score;
+            worstIndex = i;
+        }
+    });
+
+    const discarded = computerHand.splice(worstIndex, 1)[0];
+    discardPile.push(discarded);
+
+    renderDiscardPile();
+
+    //  checking win
+    if (isValidHand(computerHand)) {
+        endRound("computer");
+        return;
+    }
+
+    currentTurn = "player";
+}
+
 startGame();
