@@ -359,4 +359,58 @@ function computerTurn(){
     currentTurn = "player";
 }
 
+function isValidHand(hand){
+
+    // try all combinations of sets/runs
+    function canFormMelds(cards){
+
+        if (cards.length === 0) return true;
+
+        // try set
+        for (let i = 0; i < cards.length; i++){
+            let sameRank = cards.filter(c => c.rank === cards[i].rank);
+
+            if (sameRank.length >= 3){
+                let remaining = cards.filter(c => c.rank !== cards[i].rank);
+                if (canFormMelds(remaining)) return true;
+            }
+        }
+
+        // try run
+        for (let suit of suits){
+
+            let suitCards = cards
+                .filter(c => c.suit === suit)
+                .sort((a,b)=>rankValues[a.rank]-rankValues[b.rank]);
+
+            for (let i = 0; i < suitCards.length - 2; i++){
+
+                let run = [suitCards[i]];
+
+                for (let j = i+1; j < suitCards.length; j++){
+
+                    let last = run[run.length - 1];
+                    let current = suitCards[j];
+
+                    if (rankValues[current.rank] === rankValues[last.rank] + 1){
+                        run.push(current);
+
+                        if (run.length >= 3){
+
+                            let remaining = cards.filter(c => !run.includes(c));
+                            if (canFormMelds(remaining)) return true;
+                        }
+                    } else if (rankValues[current.rank] > rankValues[last.rank] + 1){
+                        break;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    return canFormMelds(hand);
+}
+
 startGame();
